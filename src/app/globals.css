@@ -2,26 +2,173 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'Circular';
+  src: local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI');
+  font-weight: 400;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: 'Circular';
+  src: local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Circular';
+  src: local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Circular';
+  src: local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI');
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-dark: #222222;
+  --airbnb-gray: #717171;
+  --airbnb-light: #F7F7F7;
+  --airbnb-border: #DDDDDD;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--airbnb-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Image gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  height: 100%;
+}
+
+.gallery-main {
+  grid-row: 1 / -1;
+  grid-column: 1;
+}
+
+/* Calendar styles */
+.calendar-day {
+  @apply w-10 h-10 flex items-center justify-center rounded-full text-sm cursor-pointer transition-all duration-200;
+}
+
+.calendar-day:hover:not(.disabled):not(.selected) {
+  @apply bg-airbnb-hover border border-airbnb-dark;
+}
+
+.calendar-day.selected {
+  @apply bg-airbnb-dark text-white;
+}
+
+.calendar-day.in-range {
+  @apply bg-airbnb-light;
+}
+
+.calendar-day.disabled {
+  @apply text-gray-300 cursor-not-allowed line-through;
+}
+
+/* Amenity icon grid */
+.amenity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Sticky header */
+.sticky-nav {
+  @apply fixed top-0 left-0 right-0 z-50 bg-white border-b border-airbnb-border;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sticky-nav.visible {
+  transform: translateY(0);
+}
+
+/* Photo modal */
+.photo-modal {
+  @apply fixed inset-0 z-[100] bg-white overflow-y-auto;
+}
+
+/* Booking card */
+.booking-card {
+  @apply border border-airbnb-border rounded-xl p-6 shadow-lg;
+}
+
+/* Animation classes */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* Reviews section */
+.review-card {
+  @apply pb-6 mb-6;
+}
+
+/* Share & Save buttons */
+.action-btn {
+  @apply flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-airbnb-hover transition-colors text-sm font-medium underline;
+}
+
+/* Divider */
+.section-divider {
+  @apply border-t border-airbnb-border py-8;
+}
+
+/* Host badge */
+.superhost-badge {
+  @apply inline-flex items-center gap-1 px-2 py-1 bg-white border border-airbnb-border rounded-full text-xs font-medium;
 }

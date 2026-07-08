@@ -9,9 +9,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        airbnb: {
+          red: '#FF385C',
+          dark: '#222222',
+          gray: '#717171',
+          light: '#F7F7F7',
+          border: '#DDDDDD',
+          hover: '#F0F0F0',
+        }
       },
+      fontFamily: {
+        airbnb: ['"Circular"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+      },
+      screens: {
+        'xs': '480px',
+      }
     },
   },
   plugins: [],

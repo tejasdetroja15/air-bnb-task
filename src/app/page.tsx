@@ -1,101 +1,152 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Header from "@/components/Header";
+import ImageGallery from "@/components/ImageGallery";
+import ListingInfo from "@/components/ListingInfo";
+import WhereYouSleep from "@/components/WhereYouSleep";
+import Amenities from "@/components/Amenities";
+import Calendar from "@/components/Calendar";
+import Reviews from "@/components/Reviews";
+import LocationMap from "@/components/LocationMap";
+import HostSection from "@/components/HostSection";
+import HouseRules from "@/components/HouseRules";
+import MoreStays from "@/components/MoreStays";
+import BookingCard from "@/components/BookingCard";
+import StickyNav from "@/components/StickyNav";
+import MobileBookingBar from "@/components/MobileBookingBar";
+import { listingData } from "@/data/listing";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const mainRef = useRef<HTMLDivElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    // Initialize GSAP ScrollTrigger animations for the main content
+    const ctx = gsap.context(() => {
+      // Animate sections as they scroll into view
+      gsap.utils.toArray<HTMLElement>(".animate-section").forEach((section) => {
+        gsap.fromTo(
+          section,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 88%",
+              end: "top 50%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={mainRef}>
+      <Header />
+      <StickyNav />
+
+      {/* Main Content */}
+      <main className="max-w-[1264px] mx-auto px-[80px]">
+        {/* Image Gallery */}
+        <section className="pt-6" id="photos">
+          <ImageGallery images={listingData.images} title={listingData.title} />
+        </section>
+
+        {/* Two Column Layout: Info + Booking */}
+        <div className="relative flex flex-col lg:flex-row gap-12 mt-8">
+          {/* Left Column - Listing Details */}
+          <div className="flex-1 lg:max-w-[calc(100%-380px)]">
+            <ListingInfo
+              type={listingData.type}
+              location={listingData.location}
+              host={listingData.host}
+              stats={listingData.stats}
+              rating={listingData.rating}
+              reviewCount={listingData.reviewCount}
+              highlights={listingData.highlights}
+              description={listingData.description}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+            {/* Where you'll sleep */}
+            <div className="animate-section">
+              <WhereYouSleep />
+            </div>
+
+            {/* Amenities */}
+            <div id="amenities" className="animate-section">
+              <Amenities amenities={listingData.amenities} />
+            </div>
+
+            {/* Calendar Section */}
+            <div className="animate-section py-8">
+              <Calendar />
+            </div>
+          </div>
+
+          {/* Right Column - Promo + Booking Card (Desktop) */}
+          <div className="hidden lg:block w-[372px] flex-shrink-0">
+            <div className="sticky top-[88px] pt-4">
+              <BookingCard
+                price={listingData.price}
+                rating={listingData.rating}
+                reviewCount={listingData.reviewCount}
+                cleaningFee={listingData.cleaningFee}
+                serviceFee={listingData.serviceFee}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Full-width separator */}
+        <div className="border-t border-airbnb-border mt-4"></div>
+
+        {/* Full Width Sections */}
+        <div className="animate-section">
+          <Reviews
+            reviews={listingData.reviews}
+            rating={listingData.rating}
+            reviewCount={listingData.reviewCount}
+          />
+        </div>
+
+        <div className="animate-section">
+          <LocationMap />
+        </div>
+
+        <div className="animate-section">
+          <HostSection host={listingData.host} />
+        </div>
+
+        <div className="animate-section">
+          <HouseRules
+            rules={listingData.houseRules}
+            cancellationPolicy={listingData.cancellationPolicy}
+            safetyItems={listingData.safetyItems}
+          />
+        </div>
+
+        <div className="animate-section">
+          <MoreStays />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      {/* Mobile Booking Bar */}
+      <MobileBookingBar
+        price={listingData.price}
+        rating={listingData.rating}
+        reviewCount={listingData.reviewCount}
+      />
     </div>
   );
 }
